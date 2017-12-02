@@ -9,21 +9,21 @@ public class JavaChannel {
 	 * @param numberOfParticipant
 	 *            ちゃんねるの参加者数
 	 */
-	public static void main(int numberOfParticipant) {
+	public static void main(String[] args) {
 
-		// 質問者を省いた人数分回答者を作成
+		// 質問者を省いた人数分回答者を作成(5人の場合)
+		int numberOfParticipant = 5;
 		List<Answerer> answerList = new ArrayList(numberOfParticipant - 1);
-		answerList.forEach(answer -> new Thread(answer::waitTillAnswer));
+		answerList.forEach(answer -> new Thread(answer::waitTillAnswer).start());
 
 		// 質問者の作成
-		Questioner questioner = new Questioner();
+		Questioner questioner = new Questioner("質問内容");
 		new Thread(questioner::run);
 	}
 
 	interface Participant extends Runnable {
 		/**
 		 * 質問をする
-		 * 
 		 */
 		public void ask();
 
@@ -49,7 +49,6 @@ public class JavaChannel {
 
 		/**
 		 * 質問が来るまで待機する。
-		 * 
 		 */
 		public void waitTillAnswer() {
 			try {
@@ -77,11 +76,11 @@ public class JavaChannel {
 
 	}
 
-	class Questioner implements Participant {
-		Question question;
+	static class Questioner implements Participant {
+		String question;
 
-		public Questioner() {
-			question = new Question("質問内容");
+		public Questioner(String question) {
+			this.question = question;
 		}
 
 		@Override
@@ -92,7 +91,6 @@ public class JavaChannel {
 		@Override
 		/**
 		 * 質問する
-		 * 
 		 */
 		public void ask() {
 			System.out.println(question);
@@ -102,15 +100,6 @@ public class JavaChannel {
 		@Override
 		public void answer() {
 			// TODO Auto-generated method stub
-		}
-
-	}
-
-	class Question {
-		String string;
-
-		public Question(String string) {
-			this.string = string;
 		}
 
 	}
